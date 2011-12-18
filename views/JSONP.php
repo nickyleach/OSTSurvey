@@ -1,0 +1,1 @@
+<?= $this->get['callback']; ?>(<?= json_encode($this->data); ?>);
