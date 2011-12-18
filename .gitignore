@@ -1,4 +1,7 @@
-.DS_Store
+# Misc Files
+*.DS_Store
+*~
+sftp-settings.json
 
 # Thumbnails
 ._*
