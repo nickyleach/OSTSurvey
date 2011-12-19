@@ -60,7 +60,7 @@ class APIController {
 		
 		$this->layout = ( $this->get['callback'] ? 'JSONP' : ( $this->get['json_pretty_print'] ? 'JSON_pretty' : 'JSON' ) );
 		
-		$this->slug = $this->type;
+		$this->slug = str_replace('APIController', '', get_class($this));
 		
 		$this->isHttp = true;
 		
