@@ -10,7 +10,6 @@ class Survey extends RedisObject {
 		parent::__construct($id);
 
 		if(!$this->exists()) return;
-
 	}
 
 	public function addAnswer($questionID, $answer){
@@ -42,6 +41,18 @@ class Survey extends RedisObject {
 		Redis::sadd("Survey:{$this->id}:{$questionID}:{$answerID}", $userID);
 	}
 
+	public function apiData($auth, $userID){
+		$data = parent::apiData($auth, $userID);
+
+		foreach($this->results() as $questionID => $question){
+			foreach($question['answers'] as $answerID => $votes){
+				$data[$questionID]['answers'][$answerID]['votes'] = $votes;
+			}
+		}
+
+		return $data;
+	}
+
 	public static function create($name, $userID){
 		$survey = new Survey();
 		$survey->name = $name;
@@ -56,6 +67,23 @@ class Survey extends RedisObject {
 
 	public function owner(){
 		return new User($this->ownerID);
+	}
+
+	public function remove(){
+		// Find all of the keys used to store answers
+		$answerKeys = array();
+		foreach($this->questions as $questionID => $question){
+			foreach($question['answers'] as $answerID => $answer){
+				$answerKeys[] = "Survey:{$this->id}:{$questionID}:{$answerID}";
+			}
+		}
+
+		// Remove all of the answer sets
+		if(count($answerKeys)){
+			call_user_func_array(array('Redis', 'del'), $answerKeys);
+		}
+
+		parent::remove();
 	}
 
 	public function removeQuestion($questionID){
