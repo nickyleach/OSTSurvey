@@ -5,13 +5,8 @@ class Session {
 	public static $user = array();
 	
 	public static function login($userID){
-		self::$user['id'] = $userID;
-		return true;
-	}
-
-	public static function logout(){
-		self::$user = array();
-		return true;
+		$user = new User($userID);
+		self::$user = $user->apiData(API_SELF, $userID);
 	}
 
 }
