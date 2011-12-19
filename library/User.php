@@ -45,6 +45,21 @@ class User extends RedisObject {
 		return false;
 	}
 
+	public function remove(){
+		if(!$this->exists()) return false;
+
+		// Remove all of the user's surveys
+		foreach($this->surveys as $surveyID){
+			$survey = new Survey($surveyID);
+			$survey->remove();
+		}
+
+		// And the container which references them
+		Redis::del("User:{$this->id}:surveys");
+
+		parent::remove();
+	}
+
 	public function removeSurvey($surveyID){
 		if(!$this->exists()) return;
 

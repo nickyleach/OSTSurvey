@@ -59,7 +59,7 @@ class RedisObject {
 		if(!$this->id) return false;
 
 		$args = Util::array_to_multibulk($this->encodeFields());
-		unset($args['id']);
+		$args['id'];
 
 		call_user_func_array(array('Redis', 'hmset'), array_merge(array($this->key()), $args));
 		Redis::zadd(get_class($this), microtime(true), $this->id);

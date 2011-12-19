@@ -70,6 +70,8 @@ class Survey extends RedisObject {
 	}
 
 	public function remove(){
+		if(!$this->exists()) return false;
+
 		// Find all of the keys used to store answers
 		$answerKeys = array();
 		foreach($this->questions as $questionID => $question){

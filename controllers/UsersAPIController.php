@@ -42,13 +42,37 @@ class UsersAPIController extends APIController {
 			return;
 		}
 
-		$user->setData($this->post);
+		$user->username = $this->post['username'];
+		$user->setPassword($this->post['password']);
 		$user->save();
+
+		Session::login($user->id);
 
 		$this->message = "User created";
 		$this->status = 201;
 
 		$this->response[$this->slug][] = $user->apiData();
+	}
+
+	public function delete($id){
+		$user = new User($id);
+
+		if(!$user->exists()){
+			$this->message = "User not found";
+			$this->status = 404;
+			return;
+		}
+
+		if($user->id != Session::$user['id']){
+			$this->message = "Unauthorized";
+			$this->status = 403;
+			return;
+		}
+
+		$user->remove();
+
+		$this->message = "User removed";
+		$this->status = 204;
 	}
 
 }
