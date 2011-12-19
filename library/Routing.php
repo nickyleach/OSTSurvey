@@ -17,6 +17,10 @@ class Routing {
 	}
 	
 	public static function args(){
+		if(self::$api){
+			return either(array_slice(self::$qs, 1), array());
+		}
+
 		return either(array_slice(self::$qs, 2), array());
 	}
 	
