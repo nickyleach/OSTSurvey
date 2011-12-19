@@ -18,6 +18,14 @@ function die_dump(){
 	exit;
 }
 
+function die_r(){
+	foreach(func_get_args() as $arg){
+		print_r($arg);
+	}
+
+	exit;
+}
+
 function either(){
 	foreach(func_get_args() as $arg){
 		if($arg) return $arg;
