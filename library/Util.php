@@ -17,7 +17,7 @@ class Util {
 		exit;
 	}
 	
-	public static function mutlibulk_to_array($response){
+	public static function multibulk_to_array($response){
 		$keys = array();
 		
 		foreach($response as $key => $value){
@@ -27,6 +27,15 @@ class Util {
 		}
 		
 		return $keys;
+	}
+
+	public static function array_to_multibulk($array){
+		$multi = array();
+		foreach($array as $key => $val){
+			array_push($multi, $key, either($val, ''));
+		}
+
+		return $multi;
 	}
 }
 
