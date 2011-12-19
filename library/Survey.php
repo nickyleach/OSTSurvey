@@ -22,6 +22,8 @@ class Survey extends RedisObject {
 		);
 
 		$this->save();
+
+		return count($this->questions[$questionID]['answers']) - 1;
 	}
 
 	public function addQuestion($question){

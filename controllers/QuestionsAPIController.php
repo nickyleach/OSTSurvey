@@ -9,7 +9,7 @@ class QuestionsAPIController extends APIController {
 			return;
 		}
 
-		$survey = new Survey($this->get['surveyID']);
+		$survey = new Survey($this->get['survey_id']);
 
 		if(!$survey->exists()){
 			$this->message = "Survey does not exist";
@@ -47,13 +47,14 @@ class QuestionsAPIController extends APIController {
 			return;
 		}
 
-		if($survey->addQuestion($this->post['question']) === false){
+		if(($questionID = $survey->addQuestion($this->post['question'])) === false){
 			$this->message = 'Internal Server Error';
 			$this->status = 500;
+			return;
 		}
 
 		$surveyData = $survey->apiData();
-		$this->response[$this->slug][] = $surveyData['questions'][count($surveyData['questions']) - 1];
+		$this->response[$this->slug][] = $surveyData['questions'][$questionID];
 		return;
 	}
 }
