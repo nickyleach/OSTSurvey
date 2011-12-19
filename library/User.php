@@ -35,8 +35,13 @@ class User extends RedisObject {
 		return md5($password . self::PASSWORD_SALT);
 	}
 
+	public static function idByUsername($username){
+		return Redis::get("User:username:{$username}");
+	}
+
 	public static function login($username, $password){
-		$user = new User($username);
+		$userID = self::idByUsername($username);
+		$user = new User($userID);
 
 		if($user->exists() && $user->password == self::encryptPassword($password)){
 			return $user->id;
@@ -57,6 +62,9 @@ class User extends RedisObject {
 		// And the container which references them
 		Redis::del("User:{$this->id}:surveys");
 
+		// And the username-userid reference
+		Redis::set("User:username:{$this->username}");
+
 		parent::remove();
 	}
 
@@ -64,6 +72,12 @@ class User extends RedisObject {
 		if(!$this->exists()) return;
 
 		Redis::srem("User:{$this->id}:surveys", $surveyID);
+	}
+
+	public function save(){
+		parent::save();
+
+		Redis::set("User:username:{$this->username}", $this->id);
 	}
 
 	public function setPassword($password){

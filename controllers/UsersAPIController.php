@@ -35,13 +35,13 @@ class UsersAPIController extends APIController {
 			return;
 		}
 
-		$user = new User($this->post['username']);
-		if($user->exists()){
+		if(User::idByUsername($this->post['username'])){
 			$this->message = "User already exists";
 			$this->status = 400;
 			return;
 		}
 
+		$user = new User();
 		$user->username = $this->post['username'];
 		$user->setPassword($this->post['password']);
 		$user->save();
